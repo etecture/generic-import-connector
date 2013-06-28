@@ -48,6 +48,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <artifactId>joda-time</artifactId>
+            <groupId>joda-time</groupId>
+            <type>jar</type>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
             <!-- the javaee dependency -->
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
