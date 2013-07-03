@@ -4,11 +4,11 @@
     <parent>
         <artifactId>genericimport</artifactId>
         <groupId>de.etecture.opensource</groupId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>genericimport-api</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Generic Import Connector - API</name>
