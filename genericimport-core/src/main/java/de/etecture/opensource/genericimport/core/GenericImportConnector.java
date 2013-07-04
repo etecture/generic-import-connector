@@ -40,6 +40,7 @@
 package de.etecture.opensource.genericimport.core;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -114,10 +115,17 @@ public class GenericImportConnector implements FileAgentCallback,
                     importSpec, endpointFactory, this);
             // remember the work
             this.works.put(spec, work);
-            // schedule a FileAgentWork with this importerSpec.
-            this.scheduler.scheduleWork(work,
-                    importSpec.getStartDelay(),
-                    importSpec.getPeriod());
+            try {
+                // schedule a FileAgentWork with this importerSpec.
+                this.scheduler.scheduleWork(work,
+                        new CronExpression(importSpec
+                        .getScheduleExpression()));
+            } catch (ParseException ex) {
+                LOG.severe(ex.getMessage());
+                throw new ResourceException(
+                        "cannot start work, due to unparseable schedule expression",
+                        ex);
+            }
         } else {
             throw new NotSupportedException(String.format(
                     "Endpoint for %s must be specified with an instance of %s instead of: %s",

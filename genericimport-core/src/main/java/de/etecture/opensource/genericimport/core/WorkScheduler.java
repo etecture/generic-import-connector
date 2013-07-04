@@ -39,6 +39,7 @@
  */
 package de.etecture.opensource.genericimport.core;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,7 +47,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.ScheduleExpression;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.work.ExecutionContext;
@@ -54,6 +54,7 @@ import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkListener;
 import javax.resource.spi.work.WorkManager;
+import org.joda.time.DateTime;
 
 /**
  * schedules a repeated execution of a work.
@@ -100,10 +101,9 @@ public class WorkScheduler {
      * @param work the work to do
      * @param scheduleExpression tells when to start the work.
      */
-    public void scheduleWork(Work work, ScheduleExpression scheduleExpression)
+    public void scheduleWork(Work work, CronExpression scheduleExpression)
             throws WorkException, UnavailableException {
-        throw new UnsupportedOperationException(
-                "scheduleExpression is not implemented yet");
+        scheduleWorkStarter(new WorkStarter(work, null, scheduleExpression));
     }
 
     /**
@@ -113,10 +113,9 @@ public class WorkScheduler {
      * @param scheduleExpression tells when to start the work.
      * @param listener the callback listener for the work execution
      */
-    public void scheduleWork(Work work, ScheduleExpression scheduleExpression,
+    public void scheduleWork(Work work, CronExpression scheduleExpression,
             WorkListener listener) {
-        throw new UnsupportedOperationException(
-                "scheduleExpression is not implemented yet");
+        scheduleWorkStarter(new WorkStarter(work, listener, scheduleExpression));
     }
 
     /**
@@ -158,6 +157,24 @@ public class WorkScheduler {
         }
     }
 
+    private void scheduleWorkStarter(WorkStarter starter) {
+        try {
+            Timer timer = bootCtx.createTimer();
+            long now = System.currentTimeMillis();
+            long nextValidTime =
+                    starter.se.getNextValidTimeAfter(new Date(now)).getTime();
+            timer.schedule(starter, nextValidTime - now);
+            LOG.log(Level.INFO,
+                    "scheduling the work \"{0}\" with schedule: {1} which is next at: {2}",
+                    new Object[]{starter.work,
+                starter.se,
+                new DateTime(nextValidTime).toString("HH:mm:ss")});
+            scheduledWorks.put(starter.work, timer);
+        } catch (UnavailableException ex) {
+            throw new IllegalStateException("timer is not available", ex);
+        }
+    }
+
     /**
      * cancels all scheduled works.
      */
@@ -185,29 +202,51 @@ public class WorkScheduler {
 
         private final Work work;
         private final WorkListener listener;
+        private final CronExpression se;
+        private boolean canceled = false;
 
         WorkStarter(Work work) {
             this(work, null);
         }
 
         WorkStarter(Work work, WorkListener listener) {
+            this(work, listener, null);
+        }
+
+        WorkStarter(Work work, WorkListener listener, CronExpression se) {
             this.work = work;
             this.listener = listener;
+            this.se = se;
         }
 
         @Override
         public void run() {
+            LOG.log(Level.INFO,
+                    "its {0}, so start the work: \"{1}\"",
+                    new Object[]{new DateTime().toString("HH:mm:ss"),
+                work.toString()});
             try {
                 if (listener != null) {
-                    bootCtx.getWorkManager().scheduleWork(work,
+                    bootCtx.getWorkManager().doWork(work,
                             WorkManager.IMMEDIATE,
                             execCtx, listener);
                 } else {
-                    bootCtx.getWorkManager().scheduleWork(work);
+                    bootCtx.getWorkManager().doWork(work);
                 }
             } catch (WorkException ex) {
                 LOG.log(Level.SEVERE, "cannot schedule work", ex);
             }
+            if (se != null && !canceled) {
+                // reschedule
+                cancel();
+                scheduleWorkStarter(new WorkStarter(work, listener, se));
+            }
+        }
+
+        @Override
+        public boolean cancel() {
+            canceled = true;
+            return super.cancel();
         }
     }
 }

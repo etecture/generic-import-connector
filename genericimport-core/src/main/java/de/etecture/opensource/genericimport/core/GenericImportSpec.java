@@ -41,12 +41,7 @@ package de.etecture.opensource.genericimport.core;
 
 import de.etecture.opensource.genericimport.api.ImportStatusListener;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.resource.ResourceException;
 import javax.resource.spi.Activation;
 import javax.resource.spi.ActivationSpec;
@@ -123,33 +118,6 @@ public class GenericImportSpec implements ActivationSpec, Serializable {
 
     public void setMimeType(String ImportType) {
         this.mimeType = ImportType;
-    }
-
-    public long getStartDelay() {
-        long startDelay = 0;
-        try {
-            CronExpression expression = new CronExpression(scheduleExpression);
-            Date now = new Date();
-            Date nextValid = expression.getNextValidTimeAfter(now);
-            startDelay = nextValid.getTime() - Calendar.getInstance().getTime().getTime();
-        } catch (ParseException ex) {
-            Logger.getLogger(GenericImportSpec.class.getName()).log(Level.WARNING, "Error while calculating start delay", ex);
-        }
-        return startDelay;
-    }
-
-    public long getPeriod() {
-        long period = 0;
-        try {
-            CronExpression expression = new CronExpression(this.scheduleExpression);
-            Date now = new Date();
-            Date nextValid = expression.getNextValidTimeAfter(now);
-            Date nextNextvalid = expression.getTimeAfter(nextValid);
-            period = nextNextvalid.getTime() - nextValid.getTime();
-        } catch (ParseException ex) {
-            Logger.getLogger(GenericImportSpec.class.getName()).log(Level.WARNING, "Error while calculating period", ex);
-        }
-        return period;
     }
 
     @Override

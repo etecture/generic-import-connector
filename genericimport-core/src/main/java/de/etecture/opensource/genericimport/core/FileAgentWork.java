@@ -161,4 +161,10 @@ public class FileAgentWork implements Work {
     private void sortFileArrayByAge(File[] newFiles) {
         Arrays.sort(newFiles, new FileAgeComparator());
     }
+
+    @Override
+    public String toString() {
+        return String.format("scanning directory: %s for files of type: %s",
+                spec.getImportPath(), spec.getMimeType());
+    }
 }

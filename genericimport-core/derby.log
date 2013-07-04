@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Wed Jun 26 16:25:33 CEST 2013:
+Booten von Derby Version The Apache Software Foundation - Apache Derby - 10.8.1.2 - (1095077): Instanz a816c00e-013f-80e0-08a9-00000a04d198
+f?r Datenbankverzeichnis /private/var/folders/_t/h39kj2tx73ldrdh0dblzwn7h0000gn/T/gfembed8393115771006179664tmp/lib/databases/ejbtimer   mit Klassenladeprogrammn sun.misc.Launcher$AppClassLoader@6f9702b1
+
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_21-b12
+user.dir=/Users/rhk/Projekte/ETECTURE/MEWA/current/mewa.dev.mdm/implementation/mdm/mdm-customerrelations/mdm-customerrelations-import-connector
+derby.system.home=null
+Das Ladeprogramm f?r Datenbankklassen wurde gestartet - derby.database.classpath=''
