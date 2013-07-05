@@ -39,6 +39,7 @@
  */
 package de.etecture.opensource.genericimport.core;
 
+import de.etecture.opensource.genericimport.cron.ScheduleExpression;
 import java.io.File;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -118,7 +119,7 @@ public class GenericImportConnector implements FileAgentCallback,
             try {
                 // schedule a FileAgentWork with this importerSpec.
                 this.scheduler.scheduleWork(work,
-                        new CronExpression(importSpec
+                        new ScheduleExpression(importSpec
                         .getScheduleExpression()));
             } catch (ParseException ex) {
                 LOG.severe(ex.getMessage());

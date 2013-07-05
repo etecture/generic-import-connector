@@ -39,7 +39,7 @@
  */
 package de.etecture.opensource.genericimport.core;
 
-import java.util.Date;
+import de.etecture.opensource.genericimport.cron.ScheduleExpression;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -101,7 +101,7 @@ public class WorkScheduler {
      * @param work the work to do
      * @param scheduleExpression tells when to start the work.
      */
-    public void scheduleWork(Work work, CronExpression scheduleExpression)
+    public void scheduleWork(Work work, ScheduleExpression scheduleExpression)
             throws WorkException, UnavailableException {
         scheduleWorkStarter(new WorkStarter(work, null, scheduleExpression));
     }
@@ -113,7 +113,7 @@ public class WorkScheduler {
      * @param scheduleExpression tells when to start the work.
      * @param listener the callback listener for the work execution
      */
-    public void scheduleWork(Work work, CronExpression scheduleExpression,
+    public void scheduleWork(Work work, ScheduleExpression scheduleExpression,
             WorkListener listener) {
         scheduleWorkStarter(new WorkStarter(work, listener, scheduleExpression));
     }
@@ -162,7 +162,7 @@ public class WorkScheduler {
             Timer timer = bootCtx.createTimer();
             long now = System.currentTimeMillis();
             long nextValidTime =
-                    starter.se.getNextValidTimeAfter(new Date(now)).getTime();
+                    starter.se.getNextValidTime(now);
             timer.schedule(starter, nextValidTime - now);
             LOG.log(Level.INFO,
                     "scheduling the work \"{0}\" with schedule: {1} which is next at: {2}",
@@ -202,7 +202,7 @@ public class WorkScheduler {
 
         private final Work work;
         private final WorkListener listener;
-        private final CronExpression se;
+        private final ScheduleExpression se;
         private boolean canceled = false;
 
         WorkStarter(Work work) {
@@ -213,7 +213,7 @@ public class WorkScheduler {
             this(work, listener, null);
         }
 
-        WorkStarter(Work work, WorkListener listener, CronExpression se) {
+        WorkStarter(Work work, WorkListener listener, ScheduleExpression se) {
             this.work = work;
             this.listener = listener;
             this.se = se;
