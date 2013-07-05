@@ -4,11 +4,11 @@
     <parent>
         <artifactId>genericimport</artifactId>
         <groupId>de.etecture.opensource</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>genericimport-core</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>Generic Import Connector - Core</name>
@@ -23,13 +23,13 @@
             <!-- just the api to implement the connector for -->
             <groupId>de.etecture.opensource</groupId>
             <artifactId>genericimport-api</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <!-- just the spi to implement the connector for -->
             <groupId>de.etecture.opensource</groupId>
             <artifactId>genericimport-spi</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <!-- fluent interface for assertions -->
