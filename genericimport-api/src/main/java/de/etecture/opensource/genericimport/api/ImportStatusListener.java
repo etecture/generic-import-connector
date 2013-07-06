@@ -53,14 +53,14 @@ public interface ImportStatusListener<T> {
      *
      * @since 1.1.1
      */
-    void onStart();
+    void onStart(String importId);
 
     /**
      * called, when an import is finished.
      *
      * @since 1.1.1
      */
-    void onFinished();
+    void onFinished(String importId);
 
     /**
      * called, when the importer has read a piece that can be imported.
@@ -68,7 +68,7 @@ public interface ImportStatusListener<T> {
      * @param payload
      * @since 1.1.1
      */
-    void onProgress(T payload);
+    void onProgress(String importId, T payload);
 
     /**
      * called, when the importer likes to inform about an error.
@@ -79,7 +79,7 @@ public interface ImportStatusListener<T> {
      * @return wether or not, the importer should go on (true) or stop (false)
      * @since 1.1.1
      */
-    boolean onError(String message, Object... args);
+    boolean onError(String importId, String message, Object... args);
 
     /**
      * called, when the importer likes to inform about a warning.
@@ -88,5 +88,5 @@ public interface ImportStatusListener<T> {
      * @param args
      * @since 1.1.1
      */
-    void onWarning(String message, Object... args);
+    void onWarning(String importId, String message, Object... args);
 }
