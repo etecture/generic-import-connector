@@ -79,7 +79,7 @@ public interface ImportStatusListener<T> {
      * @return wether or not, the importer should go on (true) or stop (false)
      * @since 1.1.1
      */
-    boolean onError(String importId, String message, Object... args);
+    void onError(String importId, String message, Object... args);
 
     /**
      * called, when the importer likes to inform about a warning.
